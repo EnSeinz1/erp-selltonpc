@@ -1,5 +1,6 @@
 local drugtype, selling, numberofcops = nil, false, 0
 ESX = nil
+local TSE = TriggerServerEvent
 
 Citizen.CreateThread(function()
   	while ESX == nil do
@@ -165,12 +166,13 @@ AddEventHandler('animation', function()
 	StopAnimTask(pid, "amb@prop_human_bum_bin@idle_b","idle_d", 1.0)
 end)
 
-RegisterNetEvent('np_selltonpc:policeNotify')
-AddEventHandler('np_selltonpc:policeNotify', function(alert)
-	if ESX.PlayerData.job.name == 'police' then
-		TriggerEvent('chat:addMessage', {
-			template = '<div style="padding: 0.5vw; margin: 0.5vw; background-color: rgba(48, 145, 255, 0.616); border-radius: 10px;">{0}</div>',
-			args = { alert }
-		})
-	end
-end)
+function SellFail()  --Sends a message to the PoPo
+    local coords = GetEntityCoords(GetPlayerPed(-1))
+
+    TSE('esx_phone:send', "police", '10-66 Persona sospechosa intentando vender drogas. Ubicación de envío.' , true, {
+    	x = coords.x,
+        y = coords.y,
+        z = coords.z
+    })
+end
+
